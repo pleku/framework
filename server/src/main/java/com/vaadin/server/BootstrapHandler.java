@@ -713,6 +713,7 @@ public abstract class BootstrapHandler extends SynchronizedRequestHandler {
         String serviceUrl = getServiceUrl(context);
         if (serviceUrl != null) {
             appConfig.put(ApplicationConstants.SERVICE_URL, serviceUrl);
+            appConfig.put("browserDetailsUrl", serviceUrl);
         }
 
         boolean sendUrlsAsParameters = vaadinService

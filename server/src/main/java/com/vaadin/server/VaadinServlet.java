@@ -412,6 +412,14 @@ public class VaadinServlet extends HttpServlet implements Constants {
         if ((request.getPathInfo() == null || "/".equals(request.getPathInfo()))
                 && "".equals(request.getServletPath())
                 && !location.endsWith("/")) {
+            location = request.getRequestURI();
+            if (location.contains(";jsessionid=")) {
+                location = location.replaceFirst(";jsessionid=.*", "");
+                if (location.endsWith("/") || location.endsWith("/.")) {
+                    return false;
+                }
+            }
+
             /*
              * Path info is for the root but request URI doesn't end with a
              * slash -> redirect to the same URI but with an ending slash.
@@ -507,6 +515,9 @@ public class VaadinServlet extends HttpServlet implements Constants {
      */
     private boolean ensureCookiesEnabled(VaadinServletRequest request,
             VaadinServletResponse response) throws IOException {
+        if (true) {
+            return true;
+        }
         if (ServletPortletHelper.isUIDLRequest(request)) {
             // In all other but the first UIDL request a cookie should be
             // returned by the browser.

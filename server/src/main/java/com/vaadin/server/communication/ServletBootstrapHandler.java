@@ -16,8 +16,11 @@
 
 package com.vaadin.server.communication;
 
+import javax.servlet.http.HttpServletResponse;
+
 import com.vaadin.server.BootstrapHandler;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinServletResponse;
 import com.vaadin.server.VaadinServletService;
 
 public class ServletBootstrapHandler extends BootstrapHandler {
@@ -32,7 +35,10 @@ public class ServletBootstrapHandler extends BootstrapHandler {
              * path segment in pathInfo (i.e. the part of the requested path
              * that comes after the servlet mapping)
              */
-            return VaadinServletService.getCancelingRelativePath(pathInfo);
+            HttpServletResponse r = ((VaadinServletResponse) context
+                    .getResponse()).getHttpServletResponse();
+            return r.encodeURL(
+                    VaadinServletService.getCancelingRelativePath(pathInfo));
         }
     }
 
