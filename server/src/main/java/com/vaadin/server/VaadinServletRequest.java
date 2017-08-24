@@ -76,4 +76,13 @@ public class VaadinServletRequest extends HttpServletRequestWrapper
     public VaadinServletService getService() {
         return vaadinService;
     }
+
+    @Override
+    public String getPathInfo() {
+        String pi = super.getPathInfo();
+        if (pi.startsWith("//")) {
+            return pi.replace("//", "/");
+        }
+        return pi;
+    }
 }
