@@ -19,27 +19,42 @@ package com.vaadin.server.communication;
 import javax.servlet.http.HttpServletResponse;
 
 import com.vaadin.server.BootstrapHandler;
+import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.server.VaadinServletRequest;
 import com.vaadin.server.VaadinServletResponse;
 import com.vaadin.server.VaadinServletService;
 
 public class ServletBootstrapHandler extends BootstrapHandler {
     @Override
     protected String getServiceUrl(BootstrapContext context) {
-        String pathInfo = context.getRequest().getPathInfo();
+        VaadinRequest request = context.getRequest();
+        String pathInfo = request.getPathInfo();
         if (pathInfo == null) {
-            return null;
-        } else {
-            /*
-             * Make a relative URL to the servlet by adding one ../ for each
-             * path segment in pathInfo (i.e. the part of the requested path
-             * that comes after the servlet mapping)
-             */
-            HttpServletResponse r = ((VaadinServletResponse) context
-                    .getResponse()).getHttpServletResponse();
-            return r.encodeURL(
-                    VaadinServletService.getCancelingRelativePath(pathInfo));
+            pathInfo = "";
         }
+
+        String servletPath = "";
+        if (request instanceof VaadinServletRequest) {
+            servletPath = ((VaadinServletRequest) request).getServletPath();
+            if(servletPath == null) {
+                servletPath = "";
+            }
+            if (!servletPath.isEmpty() && !servletPath.endsWith("/")) {
+                servletPath += "/";
+            }
+        }
+
+        /*
+         * Make a relative URL to the servlet by adding one ../ for each path
+         * segment in pathInfo (i.e. the part of the requested path that comes
+         * after the servlet mapping)
+         */
+        HttpServletResponse r = ((VaadinServletResponse) context.getResponse())
+                .getHttpServletResponse();
+        return r.encodeURL(servletPath
+                + VaadinServletService.getCancelingRelativePath(pathInfo));
+
     }
 
     @Override

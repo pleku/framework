@@ -80,6 +80,9 @@ public class VaadinServletRequest extends HttpServletRequestWrapper
     @Override
     public String getPathInfo() {
         String pi = super.getPathInfo();
+        if (pi == null) {
+            return null;
+        }
         if (pi.startsWith("//")) {
             return pi.replace("//", "/");
         }
